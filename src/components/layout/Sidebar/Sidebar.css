@@ -1,0 +1,44 @@
+.sidebar .MuiDrawer-paper {
+  background: #111827;
+  color: #ffffff;
+  border-right: none;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-title {
+  font-weight: 700 !important;
+  color: #ffffff;
+}
+
+.sidebar-divider {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.sidebar-content {
+  flex: 1;
+}
+
+.sidebar-footer {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.logout-btn {
+  justify-content: flex-start !important;
+
+  height: 48px;
+
+  border-radius: 10px !important;
+
+  text-transform: none !important;
+
+  font-weight: 600 !important;
+
+  background: #ef4444 !important;
+}
+
+.logout-btn:hover {
+  background: #dc2626 !important;
+}
