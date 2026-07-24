@@ -1,0 +1,280 @@
+/* =========================================
+   HEADER
+========================================= */
+
+.header {
+  position: fixed;
+
+  top: 0;
+  right: 0;
+
+  left: 180px;
+
+  height: 62px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0 24px;
+
+  background:
+    rgba(7, 11, 25, 0.94);
+
+  border-bottom: 1px solid
+    rgba(255, 255, 255, 0.04);
+
+  backdrop-filter:
+    blur(14px);
+
+  z-index: 900;
+
+  transition: left 0.3s ease;
+}
+
+/* =========================================
+   SEARCH
+========================================= */
+
+.header-search {
+  width: 260px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  padding: 0 12px;
+
+  border: 1px solid
+    rgba(255, 255, 255, 0.08);
+
+  border-radius: 9px;
+
+  background:
+    rgba(255, 255, 255, 0.05);
+
+  color: #737c91;
+}
+
+.header-search input {
+  width: 100%;
+
+  border: none;
+
+  outline: none;
+
+  background: transparent;
+
+  color: white;
+
+  font-size: 11px;
+}
+
+.header-search input::placeholder {
+  color: #7c8496;
+}
+
+/* =========================================
+   RIGHT SIDE
+========================================= */
+
+.header-right {
+  margin-left: auto;
+
+  display: flex;
+  align-items: center;
+
+  gap: 18px;
+}
+
+.header-greeting {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  color: #f4f5f8;
+
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.greeting-icon {
+  font-size: 12px;
+}
+
+/* =========================================
+   ICON BUTTON
+========================================= */
+
+.header-icon-button {
+  position: relative;
+
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: transparent;
+
+  color: #e1e5ee;
+
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.header-icon-button:hover {
+  background:
+    rgba(255, 255, 255, 0.08);
+
+  color: white;
+}
+
+/* =========================================
+   NOTIFICATION
+========================================= */
+
+.notification-count {
+  position: absolute;
+
+  top: -2px;
+  right: -2px;
+
+  width: 15px;
+  height: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: #ef3d69;
+
+  color: white;
+
+  font-size: 8px;
+
+  font-weight: 700;
+}
+
+/* =========================================
+   AVATAR
+========================================= */
+
+.header-avatar {
+  width: 30px;
+  height: 30px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #7148f2,
+      #19a5d8
+    );
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 600;
+}
+
+/* =========================================
+   MOBILE MENU
+========================================= */
+
+.header-mobile-menu {
+  display: none;
+
+  border: none;
+
+  background: transparent;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 1024px) {
+  .header {
+    left: 170px;
+  }
+
+  .header-search {
+    width: 220px;
+  }
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+  .header {
+    left: 0;
+
+    height: 60px;
+
+    padding: 0 15px;
+  }
+
+  .header-mobile-menu {
+    display: flex;
+
+    margin-right: 12px;
+  }
+
+  .header-search {
+    flex: 1;
+
+    width: auto;
+
+    max-width: 280px;
+  }
+
+  .header-greeting {
+    display: none;
+  }
+
+  .header-right {
+    gap: 5px;
+  }
+
+  .header-right
+  .header-icon-button:first-of-type {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .header-search {
+    max-width: 170px;
+  }
+
+  .header-search input {
+    font-size: 10px;
+  }
+
+  .header-right {
+    gap: 2px;
+  }
+}
