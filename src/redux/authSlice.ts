@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { AuthUser } from "../services/authApi";
@@ -35,12 +36,51 @@ const authSlice = createSlice({
       state.isAuthenticated = action.payload !== null;
     },
   },
+=======
+﻿import { createSlice } from "@reduxjs/toolkit";
+
+const authSlice = createSlice({
+
+  name: "auth",
+
+  initialState: {
+    user: null,
+    isAuthenticated: false
+  },
+
+  reducers: {
+
+    login: (state, action) => {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+      localStorage.setItem(
+        "user",
+        JSON.stringify(action.payload)
+      );
+    },
+
+    logout: (state) => {
+      state.user = null;
+      state.isAuthenticated = false;
+      localStorage.removeItem("user");
+    }
+
+  }
+
+>>>>>>> eaa902ea (Added Day 6 and Day 7 React Redux dashboard structure)
 });
 
 export const {
   login,
+<<<<<<< HEAD
   logout,
   restoreSession,
 } = authSlice.actions;
 
 export default authSlice.reducer;
+=======
+  logout
+} = authSlice.actions;
+
+export default authSlice.reducer;
+>>>>>>> eaa902ea (Added Day 6 and Day 7 React Redux dashboard structure)
