@@ -1,0 +1,95 @@
+.drill-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 420px;
+    max-width: 100%;
+    height: 100vh;
+    background: #ffffff;
+    box-shadow: -12px 0 40px rgba(0, 0, 0, 0.12);
+    padding: 24px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .drill-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .drill-header h2 {
+    margin: 0;
+    color: #0f172a;
+  }
+  
+  .drill-header button {
+    border: none;
+    background: #eef2ff;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+  .drill-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin: 28px 0;
+  }
+  
+  .drill-stats div {
+    background: #f8fafc;
+    border-radius: 14px;
+    padding: 16px;
+    text-align: center;
+  }
+  
+  .drill-stats h4 {
+    margin: 0;
+    color: #64748b;
+    font-size: 13px;
+  }
+  
+  .drill-stats span {
+    display: block;
+    margin-top: 8px;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  
+  .growth {
+    color: #10b981;
+  }
+  
+  .drill-chart {
+    margin: 20px 0 30px;
+  }
+  
+  .breakdown h3 {
+    margin-bottom: 16px;
+  }
+  
+  .break-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 0;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  
+  .break-row:last-child {
+    border-bottom: none;
+  }
+  
+  @media (max-width: 768px) {
+    .drill-panel {
+      width: 100%;
+      padding: 18px;
+    }
+  
+    .drill-stats {
+      grid-template-columns: 1fr;
+    }
+  }
