@@ -3,87 +3,109 @@ import {
   Alert,
   Box,
   Button,
+  Checkbox,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputAdornment,
   InputLabel,
   OutlinedInput,
   TextField,
+  Typography,
+  CircularProgress,
 } from "@mui/material";
 import {
   Visibility,
   VisibilityOff,
 } from "@mui/icons-material";
-import { useDispatch } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import type { AppDispatch } from "../../redux/store";
-import type {
-  AuthUser,
-  LoginPayload,
-} from "../../services/authApi";
+import type { AppDispatch, RootState } from "../../redux/store";
+import type { LoginPayload } from "../../services/authApi";
 
 import authApi from "../../services/authApi";
-import { login } from "../../redux/authSlice";
+
+import {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  clearError,
+} from "../../redux/authSlice";
 
 const LoginForm = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
+  const { isLoading, error } = useSelector(
+    (state: RootState) => state.auth
+  );
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] =
+    useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
+  const [capsLock, setCapsLock] =
+    useState(false);
 
   const validate = () => {
     if (!username.trim()) {
-      setError("Username is required.");
+      dispatch(loginFailure("Username is required."));
       return false;
     }
 
     if (!password.trim()) {
-      setError("Password is required.");
+      dispatch(loginFailure("Password is required."));
       return false;
     }
 
-    setError("");
+    dispatch(clearError());
+
     return true;
   };
 
   const handleLogin = (
-    event: FormEvent<HTMLFormElement>
+    e: FormEvent<HTMLFormElement>
   ) => {
-    event.preventDefault();
+    e.preventDefault();
 
-    if (!validate()) {
-      return;
-    }
+    if (!validate()) return;
 
-    setLoading(true);
+    dispatch(loginStart());
 
-    try {
-      const payload: LoginPayload = {
-        username,
-        password,
-      };
+    setTimeout(() => {
+      try {
+        const payload: LoginPayload = {
+          username,
+          password,
+          rememberMe,
+        };
 
-      const user: AuthUser = authApi.login(payload);
-      authApi.saveUser(user);
-      dispatch(login(user));
+        const user = authApi.login(payload);
 
-      navigate("/dashboard", {
-        replace: true,
-      });
-    } catch (err) {
-      setError(
-        err instanceof Error
-          ? err.message
-          : "Login failed."
-      );
-    } finally {
-      setLoading(false);
-    }
+        dispatch(
+          loginSuccess({
+            user,
+            rememberMe,
+          })
+        );
+
+        navigate("/dashboard", {
+          replace: true,
+        });
+      } catch (err) {
+        dispatch(
+          loginFailure(
+            err instanceof Error
+              ? err.message
+              : "Login failed."
+          )
+        );
+      }
+    }, 500);
   };
 
   return (
@@ -103,42 +125,13 @@ const LoginForm = () => {
       )}
 
       <TextField
+        autoFocus
         label="Username"
-        placeholder="Enter your username"
         fullWidth
-        autoComplete="username"
         value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        variant="outlined"
-        sx={{
-          "& .MuiOutlinedInput-root": {
-            height: 52,
-            borderRadius: "8px",
-            backgroundColor: "#FFFFFF",
-
-            "& fieldset": {
-              borderColor: "#C3C6D7",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#2563EB",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#2563EB",
-              borderWidth: "2px",
-            },
-
-            "&.Mui-focused": {
-              boxShadow:
-                "0 0 0 3px rgba(37,99,235,.15)",
-            },
-          },
-
-          "& .MuiInputLabel-root": {
-            color: "#434655",
-            fontWeight: 500,
-          },
+        onChange={(e) => {
+          setUsername(e.target.value);
+          dispatch(clearError());
         }}
       />
 
@@ -147,40 +140,21 @@ const LoginForm = () => {
 
         <OutlinedInput
           label="Password"
-          placeholder="Enter your password"
-          autoComplete="current-password"
           type={
             showPassword
               ? "text"
               : "password"
           }
           value={password}
-          onChange={(e) =>
-            setPassword(e.target.value)
-          }
-          sx={{
-            height: 52,
-            borderRadius: "8px",
-            backgroundColor: "#FFFFFF",
-
-            "& fieldset": {
-              borderColor: "#C3C6D7",
-            },
-
-            "&:hover fieldset": {
-              borderColor: "#2563EB",
-            },
-
-            "&.Mui-focused fieldset": {
-              borderColor: "#2563EB",
-              borderWidth: "2px",
-            },
-
-            "&.Mui-focused": {
-              boxShadow:
-                "0 0 0 3px rgba(37,99,235,.15)",
-            },
+          onChange={(e) => {
+            setPassword(e.target.value);
+            dispatch(clearError());
           }}
+          onKeyUp={(e) =>
+            setCapsLock(
+              e.getModifierState("CapsLock")
+            )
+          }
           endAdornment={
             <InputAdornment position="end">
               <IconButton
@@ -202,38 +176,50 @@ const LoginForm = () => {
         />
       </FormControl>
 
+      {capsLock && (
+        <Typography
+          color="warning.main"
+          variant="body2"
+        >
+          Caps Lock is ON.
+        </Typography>
+      )}
+
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={rememberMe}
+            onChange={(e) =>
+              setRememberMe(
+                e.target.checked
+              )
+            }
+          />
+        }
+        label="Remember Me"
+      />
+
       <Button
         type="submit"
         variant="contained"
+        disabled={isLoading}
         fullWidth
         size="large"
-        disabled={loading}
-        sx={{
-          height: 50,
-          borderRadius: "8px",
-          backgroundColor: "#2563EB",
-          color: "#FFFFFF",
-          fontWeight: 600,
-          fontSize: "16px",
-          textTransform: "none",
-          boxShadow:
-            "0 4px 10px rgba(37,99,235,0.25)",
-          transition: "all .2s ease",
-
-          "&:hover": {
-            backgroundColor: "#004AC6",
-            transform: "scale(0.98)",
-            boxShadow:
-              "0 8px 20px rgba(37,99,235,0.35)",
-          },
-
-          "&:disabled": {
-            backgroundColor: "#CBD5E1",
-            color: "#64748B",
-          },
-        }}
       >
-        {loading ? "Signing In..." : "Sign In"}
+        {isLoading ? (
+          <>
+            <CircularProgress
+              size={20}
+              sx={{
+                color: "#fff",
+                mr: 1,
+              }}
+            />
+            Signing In...
+          </>
+        ) : (
+          "Sign In"
+        )}
       </Button>
     </Box>
   );

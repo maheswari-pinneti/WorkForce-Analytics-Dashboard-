@@ -1,4 +1,12 @@
-import { Button, Container, Paper, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Container,
+  Paper,
+  Typography,
+} from "@mui/material";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import HomeIcon from "@mui/icons-material/Home";
 import { useNavigate } from "react-router-dom";
 
 const Unauthorized = () => {
@@ -10,44 +18,92 @@ const Unauthorized = () => {
       sx={{
         minHeight: "100vh",
         display: "flex",
-        alignItems: "center",
         justifyContent: "center",
+        alignItems: "center",
       }}
     >
       <Paper
-        elevation={4}
+        elevation={0}
         sx={{
-          p: 5,
-          textAlign: "center",
-          borderRadius: 3,
           width: "100%",
+          p: 5,
+          borderRadius: 4,
+          textAlign: "center",
+          border: "1px solid #E2E8F0",
+          boxShadow:
+            "0 20px 45px rgba(15,23,42,.08)",
         }}
       >
-        <Typography >
+        <Box
+          sx={{
+            width: 80,
+            height: 80,
+            mx: "auto",
+            mb: 3,
+            borderRadius: "50%",
+            bgcolor: "#FEE2E2",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <LockOutlinedIcon
+            sx={{
+              fontSize: 42,
+              color: "#DC2626",
+            }}
+          />
+        </Box>
+
+        <Typography
+          variant="h3"
+          sx={{
+            fontWeight: 700,
+            color: "error",
+          }}
+        >
           403
         </Typography>
 
         <Typography
           variant="h5"
-          sx={{ mt: 2 }}
-          gutterBottom
+          sx={{
+            mt: 2,
+            fontWeight: 600,
+          }}
         >
-          Unauthorized Access
+          Access Denied
         </Typography>
 
         <Typography
-          variant="body1"
-          color="text.secondary"
-          sx={{ mb: 4 }}
+          sx={{
+            mt: 2,
+            color: "#64748B",
+            mb: 4,
+          }}
         >
-          You don't have permission to access this page.
+          You don't have permission to
+          access this page.
+
+          <br />
+
+          Please contact your administrator
+          if you believe this is a mistake.
         </Typography>
 
         <Button
           variant="contained"
-          onClick={() => navigate("/dashboard")}
+          startIcon={<HomeIcon />}
+          onClick={() =>
+            navigate("/dashboard")
+          }
+          sx={{
+            textTransform: "none",
+            px: 4,
+            borderRadius: 2,
+          }}
         >
-          Go to Dashboard
+          Back to Dashboard
         </Button>
       </Paper>
     </Container>

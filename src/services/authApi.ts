@@ -1,8 +1,13 @@
-export type UserRole = "Admin" | "HR" | "Manager" | "Employee";
+export type UserRole =
+  | "Admin"
+  | "HR"
+  | "Manager"
+  | "Employee";
 
 export interface LoginPayload {
   username: string;
   password: string;
+  rememberMe?: boolean;
 }
 
 export interface AuthUser {
@@ -16,6 +21,7 @@ interface MockUser extends AuthUser {
 }
 
 const STORAGE_KEY = "auth_user";
+const SESSION_EXPIRY_HOURS = 8;
 
 const mockUsers: MockUser[] = [
   {
@@ -44,16 +50,26 @@ const mockUsers: MockUser[] = [
   },
 ];
 
+interface StoredSession {
+  user: AuthUser;
+  loginTime: number;
+  expiresAt: number;
+  rememberMe: boolean;
+}
+
 const authApi = {
   login(payload: LoginPayload): AuthUser {
     const user = mockUsers.find(
       (u) =>
-        u.username === payload.username &&
+        u.username.toLowerCase() ===
+          payload.username.trim().toLowerCase() &&
         u.password === payload.password
     );
 
     if (!user) {
-      throw new Error("Invalid username or password.");
+      throw new Error(
+        "Invalid username or password."
+      );
     }
 
     const authUser: AuthUser = {
@@ -62,31 +78,85 @@ const authApi = {
       role: user.role,
     };
 
-    this.saveUser(authUser);
+    this.saveUser(
+      authUser,
+      payload.rememberMe ?? false
+    );
 
     return authUser;
   },
 
-  saveUser(user: AuthUser) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
+  saveUser(
+    user: AuthUser,
+    rememberMe = false
+  ) {
+    const now = Date.now();
+
+    const session: StoredSession = {
+      user,
+      loginTime: now,
+      expiresAt:
+        now +
+        SESSION_EXPIRY_HOURS *
+          60 *
+          60 *
+          1000,
+      rememberMe,
+    };
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(session)
+    );
   },
 
   getCurrentUser(): AuthUser | null {
-    const user = localStorage.getItem(STORAGE_KEY);
+    const sessionString =
+      localStorage.getItem(STORAGE_KEY);
 
-    if (!user) {
+    if (!sessionString) {
       return null;
     }
 
-    return JSON.parse(user) as AuthUser;
+    try {
+      const session: StoredSession =
+        JSON.parse(sessionString);
+
+      if (
+        Date.now() >
+        session.expiresAt
+      ) {
+        this.removeUser();
+        return null;
+      }
+
+      return session.user;
+    } catch {
+      this.removeUser();
+      return null;
+    }
+  },
+
+  getUserRole(): UserRole | null {
+    return this.getCurrentUser()?.role ?? null;
+  },
+
+  isAuthenticated(): boolean {
+    return this.getCurrentUser() !== null;
   },
 
   removeUser() {
     localStorage.removeItem(STORAGE_KEY);
   },
 
-  isAuthenticated() {
-    return this.getCurrentUser() !== null;
+  refreshSession() {
+    const user = this.getCurrentUser();
+
+    if (!user) {
+      return;
+    }
+
+    this.saveUser(user);
   },
 };
 
