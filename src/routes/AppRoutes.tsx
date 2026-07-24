@@ -48,9 +48,7 @@ const AppRoutes = () => {
         }
       />
 
-      {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
-        {/* Common Layout */}
         <Route element={<Layout />}>
           <Route
             path="/dashboard"
@@ -76,6 +74,11 @@ const AppRoutes = () => {
             <Route
               path="/analytics"
               element={<div>Analytics</div>}
+            />
+
+            <Route
+              path="/reports"
+              element={<div>Reports</div>}
             />
           </Route>
 
